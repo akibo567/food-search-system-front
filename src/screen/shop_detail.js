@@ -24,7 +24,7 @@ function ShopDetail(props) {
       <p>店舗名称:{Shop_Item.name}</p>
       <p>住所:{Shop_Item.location}</p>
       <p>営業時間:{Shop_Item.business_hour}</p>
-      <p>画像:{Shop_Item.thumb_img}</p>
+      <p><img src={Shop_Item.thumb_img} alt=""/></p>
       </div>
   );
 }
