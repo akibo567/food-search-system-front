@@ -1,11 +1,17 @@
-import logo from './logo.svg';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Search from './screen/search';
+import ShopDetail from './screen/shop_detail';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Search/>
+      <BrowserRouter>
+        <Routes>
+          <Route path={`/`} element={<Search />} />
+          <Route path={`/shop_detail`} element={<ShopDetail />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
