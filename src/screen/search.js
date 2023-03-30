@@ -6,10 +6,17 @@ import ShopList from "../components/shop_list"
 import {API_ENDPOINT} from "../settings"
 
 function Search() {
-  const [Latitude_Data, Set_Latitude_Data] = useState();
-  const [Longitude_Data, Set_Longitude_Data] = useState();
+  const [Latitude_Data, Set_Latitude_Data] = useState(null);
+  const [Longitude_Data, Set_Longitude_Data] = useState(null);
 
+  const [Is_Loaded_Geolocation, Set_Is_Loaded_Geolocation] = useState(false);
+  const [Is_Supported_Geolocation, Set_Is_Supported_Geolocation] = useState(false);
+  const [Is_Loaded_Searched_List, Set_Is_Loaded_Searched_List] = useState(false);
   const [Searched_List, Set_Searched_List] = useState();
+
+  const [Current_Pageno, Set_Current_Pageno] = useState(1);
+  const [Page_Item_Amount, Set_Page_Item_Amount] = useState(3);
+  const [Results_Available, Set_Results_Available] = useState(0);
 
   const [Selected_Range, Set_selectedRange] = useState(1);
 
@@ -23,14 +30,34 @@ function Search() {
   });
 
   const Search_Button_Onclick = () => {
+    Search_Shop(true);
+  };
+
+  const Next_Button_Onclick = () => {
+    Set_Current_Pageno(Current_Pageno + 1);
+  };
+
+  const Prev_Button_Onclick = () => {
+    Set_Current_Pageno(Current_Pageno - 1);
+  };
+
+  const Search_Shop = (Refresh) => {
+    Set_Is_Loaded_Searched_List(false);
     axios_instance
     .post('/search_shop', {
       Latitude: Latitude_Data,
       Longitude: Longitude_Data,
       Range: Selected_Range,
+      Current_Pageno: Current_Pageno,
+      Page_Item_Amount: Page_Item_Amount,
     })
     .then(function (response) {
-      Set_Searched_List(response.data);
+      Set_Searched_List(response.data.shop);
+      Set_Results_Available(response.data.results_available);
+      Set_Is_Loaded_Searched_List(true);
+      if(Refresh){
+        Set_Current_Pageno(1);  
+      }
     })
     .catch(function () {
       alert("通信エラー");
@@ -38,18 +65,33 @@ function Search() {
   };
   
   useEffect(() => {
-    // Update the document title using the browser API
-    navigator.geolocation.getCurrentPosition(position => {
-      const { latitude, longitude } = position.coords;
-      Set_Latitude_Data(latitude);
-      Set_Longitude_Data(longitude);
-    });
-  });
+    if(navigator.geolocation){
+      Set_Is_Supported_Geolocation(true);
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords;
+        Set_Latitude_Data(latitude);
+        Set_Longitude_Data(longitude);
+      });
+    }
+  },[Is_Supported_Geolocation]);
+
+  useEffect(() => {
+    if(Is_Loaded_Searched_List){
+      Search_Shop(false);
+    }
+  },[Current_Pageno]);
 
   return (
     <div className="Search_Screen">
-     <p>latitude:{Latitude_Data}</p>
-     <p>Longitude:{Longitude_Data}</p>
+     {
+        !Is_Supported_Geolocation ? 
+          <p>Geolocation API is not supported.</p>
+          :
+          (Latitude_Data === null || Longitude_Data === null) ?
+            <p>Loaging Geolocation...</p>
+            :
+            <p>現在地 経度:{Latitude_Data} 緯度:{Longitude_Data}</p>
+     }
 
     現在地からの範囲：
      <select
@@ -67,13 +109,32 @@ function Search() {
             onClick={() => {
               Search_Button_Onclick();
             }}
+            disabled={Latitude_Data === null || Longitude_Data === null}
             className="load_button"
       >検索</button>
+
+      <button
+            onClick={() => {
+              Prev_Button_Onclick();
+            }}
+            disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
+            className="load_button"
+      >Prev</button>
+           <button
+            onClick={() => {
+              Next_Button_Onclick();
+            }}
+            disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
+            className="load_button"
+      >Next</button>
+      <p>件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}/{Results_Available}</p>
      {Searched_List && <ShopList
         shop_items={Searched_List}
      />}
     </div>
   );
+
+
 }
 
 export default Search;
