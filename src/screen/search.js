@@ -108,6 +108,8 @@ function Search() {
 
   return (
     <div className="Search_Screen">
+
+      <StyledAppTitle>飲食店検索システム</StyledAppTitle>
      {
         !Is_Supported_Geolocation ? 
           <p>Geolocation API is not supported.</p>
@@ -119,87 +121,93 @@ function Search() {
      }
 
     <StyledSearchArea>
-      <p>検索条件</p>
-      <label>
-      現在地からの範囲:
-      <select
-            value={Selected_Range}
-            onChange={e => Set_selectedRange(e.target.value)}
-          >
-            <option value="1">300m</option>
-            <option value="2">500m</option>
-            <option value="3">1000m</option>
-            <option value="4">2000m</option>
-            <option value="5">3000m</option>
-          </select>
-      </label>
-      <label>
-        キーワード:
-        <input
-          value={Search_Keyword}
-          onChange={e => Set_Search_Keyword(e.target.value)}
-        />
-      </label>
-      <label htmlFor="check">
-        個室あり:
-      </label>
-      <input
-        type="checkbox"
-        id="check"
-        checked={Is_Checked_Private_Room}
-        onChange={() => Set_Is_Checked_Private_Room(prevState => !prevState)}
-      />
-      <label>
-        最大表示件数:
+      <StyledSearchAreaTitle>検索条件</StyledSearchAreaTitle>
+        <StyledSearchAreaLabel>
+        現在地からの範囲:
         <select
-            value={New_Page_Item_Amount}
-            onChange={e => Set_New_Page_Item_Amount(e.target.value)}
-          >
-            <option value={5}>5件</option>
-            <option value={10}>10件</option>
-            <option value={25}>25件</option>
-            <option value={50}>50件</option>
-          </select>
-      </label>
-      <p>営業時間:</p>
-      <label htmlFor="check">
-        ランチあり:
-      </label>
-      <input
-        type="checkbox"
-        id="check"
-        checked={Is_Checked_Lunch}
-        onChange={() => Set_Is_Checked_Lunch(prevState => !prevState)}
-      />
-      <label htmlFor="check">
-        23時以降食事OK:
-      </label>
-      <input
-        type="checkbox"
-        id="check"
-        checked={Is_Checked_Midnight_Meal}
-        onChange={() => Set_Is_Checked_Midnight_Meal(prevState => !prevState)}
-      />
+              value={Selected_Range}
+              onChange={e => Set_selectedRange(e.target.value)}
+            >
+              <option value="1">300m</option>
+              <option value="2">500m</option>
+              <option value="3">1000m</option>
+              <option value="4">2000m</option>
+              <option value="5">3000m</option>
+            </select>
+        </StyledSearchAreaLabel>
+        <StyledSearchAreaLabel>
+          キーワード:
+          <input
+            value={Search_Keyword}
+            onChange={e => Set_Search_Keyword(e.target.value)}
+          />
+        </StyledSearchAreaLabel>
+        <StyledSearchAreaLabel htmlFor="private_room">
+          個室あり:
+        <input
+          type="checkbox"
+          id="private_room"
+          checked={Is_Checked_Private_Room}
+          onChange={() => Set_Is_Checked_Private_Room(prevState => !prevState)}
+        />
+        </StyledSearchAreaLabel>
+
+      <StyledSearchAreaTopic>営業時間:</StyledSearchAreaTopic>
+
+        <StyledSearchAreaLabel htmlFor="lunch">
+          ランチあり:
+        <input
+          type="checkbox"
+          id="lunch"
+          checked={Is_Checked_Lunch}
+          onChange={() => Set_Is_Checked_Lunch(prevState => !prevState)}
+        />
+        </StyledSearchAreaLabel>
+        <StyledSearchAreaLabel htmlFor="midnight_meal">
+          23時以降食事OK:
+        <input
+          type="checkbox"
+          id="midnight_meal"
+          checked={Is_Checked_Midnight_Meal}
+          onChange={() => Set_Is_Checked_Midnight_Meal(prevState => !prevState)}
+        />
+        </StyledSearchAreaLabel>
+
+      <StyledSearchAreaTopic>表示設定:</StyledSearchAreaTopic>
+
+        <StyledSearchAreaLabel>
+          最大表示件数:
+          <select
+              value={New_Page_Item_Amount}
+              onChange={e => Set_New_Page_Item_Amount(e.target.value)}
+            >
+              <option value={5}>5件</option>
+              <option value={10}>10件</option>
+              <option value={25}>25件</option>
+              <option value={50}>50件</option>
+            </select>
+        </StyledSearchAreaLabel>
+
 
     </StyledSearchArea>
+
       <div>
         <StyledSearchButton
             onClick={() => {
               Search_Button_Onclick();
             }}
             disabled={Latitude_Data === null || Longitude_Data === null}
-            className="load_button"
       >検索</StyledSearchButton>
       </div>
 
 
+    
       <StyledPagingContainer>
         <StyledNPButton
               onClick={() => {
                 Prev_Button_Onclick();
               }}
               disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
-              className="load_button"
         >Prev</StyledNPButton>
         <StyledPagingText>
         件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
@@ -211,7 +219,6 @@ function Search() {
                 Next_Button_Onclick();
               }}
               disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
-              className="load_button"
         >Next</StyledNPButton>
       </StyledPagingContainer>
 
@@ -224,8 +231,17 @@ function Search() {
 
 }
 
+const StyledAppTitle = styled.h1`
+  text-align: left;
+  font-size: 30px;
+  margin-bottom: 10px;
+  background-color: black;
+  color: white;
+  padding: 5px;
+`;
+
 const StyledNPButton = styled(StyledCommonButton)`
-  width:200px;
+  width:100px;
   height:50px;
   font-size: 20px;
 `;
@@ -246,17 +262,34 @@ const StyledPagingContainer = styled.div`
 const StyledSearchButton = styled(StyledCommonButton)`
   width:200px;
   height:50px;
-  font-size: 20px;
+  font-size: 20px;3
 `;
 
 const StyledSearchArea = styled.div`
   //margin:10px;
   font-size: 15px;
   border: 2px solid #c0c0c0;
-  padding : 20px;
+  padding-bottom : 15px;
+  padding-left : 10px;
+  padding-right : 10px;
   border-radius: 30px;
   display: inline-block;
   margin-bottom: 10px;
+`;
+
+const StyledSearchAreaTitle = styled.h2`
+  font-size: 20px;
+  border-bottom:1px solid #c0c0c0;
+`;
+
+const StyledSearchAreaTopic = styled.h3`
+  font-size: 17px;
+  margin: 2px;
+`;
+
+const StyledSearchAreaLabel = styled.label`
+  font-size: 15px;
+  margin-right: 10px;
 `;
 
 
