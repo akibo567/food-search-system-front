@@ -20,7 +20,8 @@ function ShopListItem(props) {
     <StyledMenuListComponent>
       <img src={props.shopitem.thumb_img} alt=""/>
       <StyledShopName>{props.shopitem.name}</StyledShopName>
-      <StyledShopAccess>アクセス:{props.shopitem.acccess}</StyledShopAccess>
+      <StyledShopDetail>定休日:{props.shopitem.close}</StyledShopDetail>
+      <StyledShopDetail>アクセス:{props.shopitem.acccess}</StyledShopDetail>
       <StyledDetailButton
             onClick={() => {
               Detail_Button_Onclick();
@@ -54,7 +55,7 @@ const StyledShopName = styled.p`
   border-bottom:1px solid #c0c0c0;
 `;
 
-const StyledShopAccess = styled.p`
+const StyledShopDetail = styled.p`
   font-size: 15px;
   margin-bottom:5px;
 `;
