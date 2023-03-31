@@ -95,7 +95,7 @@ function Search() {
           (Latitude_Data === null || Longitude_Data === null) ?
             <p>Loaging Geolocation...</p>
             :
-            <p>現在地 経度:{Latitude_Data} 緯度:{Longitude_Data}</p>
+            <p>現在地 偉度:{Latitude_Data} 経度:{Longitude_Data}</p>
      }
 
     <StyledSearchArea>
@@ -110,6 +110,7 @@ function Search() {
             <option value="4">2000m</option>
             <option value="5">3000m</option>
           </select>
+
 
       <div>
         <StyledSearchButton

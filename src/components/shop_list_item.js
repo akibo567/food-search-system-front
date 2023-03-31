@@ -21,12 +21,12 @@ function ShopListItem(props) {
       <img src={props.shopitem.thumb_img} alt=""/>
       <p>店舗名称:{props.shopitem.name}</p>
       <p>アクセス:{props.shopitem.acccess}</p>
-      <StyledCommonButton
+      <StyledDetailButton
             onClick={() => {
               Detail_Button_Onclick();
             }}
             className="detail_button"
-      >詳細</StyledCommonButton>
+      >詳細</StyledDetailButton>
     </StyledMenuListComponent>
   );
 }
@@ -40,6 +40,11 @@ const StyledMenuListComponent = styled.div`
   border: 2px solid #000000;
   border-radius: 30px;
   padding: 5px;
+`;
+
+const StyledDetailButton = styled(StyledCommonButton)`
+  width:100px;
+  height:30px;
 `;
 
 export default ShopListItem;
