@@ -28,6 +28,7 @@ function Search() {
   const [New_Page_Item_Amount, Set_New_Page_Item_Amount] = useState(10);
   const [Search_Keyword, Set_Search_Keyword] = useState("");
   const [Is_Checked_Private_Room, Set_Is_Checked_Private_Room] = useState(false);
+  const [Is_Checked_Parking, Set_Is_Checked_Parking] = useState(false);
   const [Is_Checked_Lunch,Set_Is_Checked_Lunch] = useState(false);
   const [Is_Checked_Midnight_Meal,Set_Is_Checked_Midnight_Meal] = useState(false);
 
@@ -65,6 +66,7 @@ function Search() {
         Page_Item_Amount: New_Page_Item_Amount,
         Keyword: Search_Keyword,
         Private_Room: Is_Checked_Private_Room? 1 : 0,
+        Parking: Is_Checked_Parking? 1 : 0,
         Lunch: Is_Checked_Lunch? 1 : 0,
         Midnight_Meal: Is_Checked_Midnight_Meal? 1 : 0,
       }
@@ -112,6 +114,7 @@ function Search() {
         Set_selectedRange(storage_query.Range);
         Set_Search_Keyword(storage_query.Keyword);
         Set_Is_Checked_Private_Room(storage_query.Private_Room);
+        Set_Is_Checked_Parking(storage_query.Parking);
         Set_Is_Checked_Lunch(storage_query.Lunch);
         Set_Is_Checked_Midnight_Meal(storage_query.Midnight_Meal);
       }
@@ -188,6 +191,15 @@ function Search() {
             value={Search_Keyword}
             onChange={e => Set_Search_Keyword(e.target.value)}
           />
+        </StyledSearchAreaLabel>
+        <StyledSearchAreaLabel htmlFor="parking">
+          駐車場あり:
+        <input
+          type="checkbox"
+          id="parking"
+          checked={Is_Checked_Parking}
+          onChange={() => Set_Is_Checked_Parking(prevState => !prevState)}
+        />
         </StyledSearchAreaLabel>
         <StyledSearchAreaLabel htmlFor="private_room">
           個室あり:
