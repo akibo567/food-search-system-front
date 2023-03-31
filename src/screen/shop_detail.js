@@ -25,8 +25,10 @@ function ShopDetail(props) {
         <div className="Detail_Screen">
         <StyledStoreName>{Shop_Item.name}</StyledStoreName>
         <p><img src={Shop_Item.thumb_img} alt=""/></p>
-        <p>住所:{Shop_Item.location}</p>
-        <p>営業時間:{Shop_Item.business_hour}</p>
+        <StyledSection>住所:</StyledSection>
+        <p>{Shop_Item.location}</p>
+        <StyledSection>営業時間:</StyledSection>
+          <p>{Shop_Item.business_hour}</p>
         </div>
       }
     </StyledShopDetail>
@@ -48,6 +50,13 @@ const StyledStoreName = styled.h1`
   background-color: black;
   color: white;
   padding: 5px;
+`;
+
+const StyledSection = styled.h2`
+  text-align: left;
+  font-size: 20px;
+  margin-bottom: 10px;
+  border-bottom:1px solid #c0c0c0;
 `;
 
 export default ShopDetail;

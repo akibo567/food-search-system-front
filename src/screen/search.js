@@ -24,6 +24,7 @@ function Search() {
   const [Results_Available, Set_Results_Available] = useState(0);
 
   const [Selected_Range, Set_selectedRange] = useState(1);
+  const [New_Page_Item_Amount, Set_New_Page_Item_Amount] = useState(9);
 
 
   const axios_instance = axios.create({
@@ -99,6 +100,7 @@ function Search() {
      }
 
     <StyledSearchArea>
+      <p>検索条件</p>
       現在地からの範囲：
       <select
             value={Selected_Range}
@@ -111,7 +113,7 @@ function Search() {
             <option value="5">3000m</option>
           </select>
 
-
+    </StyledSearchArea>
       <div>
         <StyledSearchButton
             onClick={() => {
@@ -122,25 +124,29 @@ function Search() {
       >検索</StyledSearchButton>
       </div>
 
-     </StyledSearchArea>
 
-      <StyledNPButton
-            onClick={() => {
-              Prev_Button_Onclick();
-            }}
-            disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
-            className="load_button"
-      >Prev</StyledNPButton>
-      件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
-              {( Current_Pageno * Page_Item_Amount)}/
-              {Results_Available}
-           <StyledNPButton
-            onClick={() => {
-              Next_Button_Onclick();
-            }}
-            disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
-            className="load_button"
-      >Next</StyledNPButton>
+      <StyledPagingContainer>
+        <StyledNPButton
+              onClick={() => {
+                Prev_Button_Onclick();
+              }}
+              disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
+              className="load_button"
+        >Prev</StyledNPButton>
+        <StyledPagingText>
+        件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
+                {Results_Available < ( Current_Pageno * Page_Item_Amount)? Results_Available : ( Current_Pageno * Page_Item_Amount)}/
+                {Results_Available}
+        </StyledPagingText>
+            <StyledNPButton
+              onClick={() => {
+                Next_Button_Onclick();
+              }}
+              disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
+              className="load_button"
+        >Next</StyledNPButton>
+      </StyledPagingContainer>
+
      {Searched_List && <ShopList
         shop_items={Searched_List}
      />}
@@ -153,16 +159,38 @@ function Search() {
 const StyledNPButton = styled(StyledCommonButton)`
   width:200px;
   height:50px;
+  font-size: 20px;
+`;
+
+const StyledPagingText = styled.p`
+  margin:10px;
+  font-size: 20px;
+`;
+
+const StyledPagingContainer = styled.div`
+  margin:10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const StyledSearchButton = styled(StyledCommonButton)`
   width:200px;
   height:50px;
+  font-size: 20px;
 `;
 
 const StyledSearchArea = styled.div`
-  margin:10px;
+  //margin:10px;
   font-size: 15px;
+  border: 2px solid #c0c0c0;
+  padding : 20px;
+  border-radius: 30px;
+  display: inline-block;
+  margin-bottom: 10px;
 `;
+
+
 
 export default Search;
