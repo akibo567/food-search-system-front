@@ -17,14 +17,19 @@ function Search() {
   const [Is_Loaded_Geolocation, Set_Is_Loaded_Geolocation] = useState(false);
   const [Is_Supported_Geolocation, Set_Is_Supported_Geolocation] = useState(false);
   const [Is_Loaded_Searched_List, Set_Is_Loaded_Searched_List] = useState(false);
+  const [Search_Query, Set_Search_Query] = useState();
   const [Searched_List, Set_Searched_List] = useState();
 
   const [Current_Pageno, Set_Current_Pageno] = useState(1);
-  const [Page_Item_Amount, Set_Page_Item_Amount] = useState(9);
+  const [Page_Item_Amount, Set_Page_Item_Amount] = useState(10);
   const [Results_Available, Set_Results_Available] = useState(0);
 
   const [Selected_Range, Set_selectedRange] = useState(1);
-  const [New_Page_Item_Amount, Set_New_Page_Item_Amount] = useState(9);
+  const [New_Page_Item_Amount, Set_New_Page_Item_Amount] = useState(10);
+  const [Search_Keyword, Set_Search_Keyword] = useState("");
+  const [Is_Checked_Private_Room, Set_Is_Checked_Private_Room] = useState(false);
+  const [Is_Checked_Lunch,Set_Is_Checked_Lunch] = useState(false);
+  const [Is_Checked_Midnight_Meal,Set_Is_Checked_Midnight_Meal] = useState(false);
 
 
   const axios_instance = axios.create({
@@ -49,14 +54,27 @@ function Search() {
 
   const Search_Shop = (Refresh) => {
     Set_Is_Loaded_Searched_List(false);
+    let Post_Search_Query;
+    if(Refresh){
+      Set_Page_Item_Amount(New_Page_Item_Amount);
+      Post_Search_Query={
+        Latitude: Latitude_Data,
+        Longitude: Longitude_Data,
+        Range: Selected_Range,
+        Current_Pageno: Current_Pageno,
+        Page_Item_Amount: New_Page_Item_Amount,
+        Keyword: Search_Keyword,
+        Private_Room: Is_Checked_Private_Room? 1 : 0,
+        Lunch: Is_Checked_Lunch? 1 : 0,
+        Midnight_Meal: Is_Checked_Midnight_Meal? 1 : 0,
+      }
+    }else{
+      Post_Search_Query = Search_Query;
+      Post_Search_Query.Current_Pageno = Current_Pageno;
+    }
+    Set_Search_Query(Post_Search_Query);
     axios_instance
-    .post('/search_shop', {
-      Latitude: Latitude_Data,
-      Longitude: Longitude_Data,
-      Range: Selected_Range,
-      Current_Pageno: Current_Pageno,
-      Page_Item_Amount: Page_Item_Amount,
-    })
+    .post('/search_shop', Post_Search_Query)
     .then(function (response) {
       Set_Searched_List(response.data.shop);
       Set_Results_Available(response.data.results_available);
@@ -87,6 +105,7 @@ function Search() {
     }
   },[Current_Pageno]);
 
+
   return (
     <div className="Search_Screen">
      {
@@ -101,7 +120,8 @@ function Search() {
 
     <StyledSearchArea>
       <p>検索条件</p>
-      現在地からの範囲：
+      <label>
+      現在地からの範囲:
       <select
             value={Selected_Range}
             onChange={e => Set_selectedRange(e.target.value)}
@@ -112,6 +132,54 @@ function Search() {
             <option value="4">2000m</option>
             <option value="5">3000m</option>
           </select>
+      </label>
+      <label>
+        キーワード:
+        <input
+          value={Search_Keyword}
+          onChange={e => Set_Search_Keyword(e.target.value)}
+        />
+      </label>
+      <label htmlFor="check">
+        個室あり:
+      </label>
+      <input
+        type="checkbox"
+        id="check"
+        checked={Is_Checked_Private_Room}
+        onChange={() => Set_Is_Checked_Private_Room(prevState => !prevState)}
+      />
+      <label>
+        最大表示件数:
+        <select
+            value={New_Page_Item_Amount}
+            onChange={e => Set_New_Page_Item_Amount(e.target.value)}
+          >
+            <option value={5}>5件</option>
+            <option value={10}>10件</option>
+            <option value={25}>25件</option>
+            <option value={50}>50件</option>
+          </select>
+      </label>
+      <p>営業時間:</p>
+      <label htmlFor="check">
+        ランチあり:
+      </label>
+      <input
+        type="checkbox"
+        id="check"
+        checked={Is_Checked_Lunch}
+        onChange={() => Set_Is_Checked_Lunch(prevState => !prevState)}
+      />
+      <label htmlFor="check">
+        23時以降食事OK:
+      </label>
+      <input
+        type="checkbox"
+        id="check"
+        checked={Is_Checked_Midnight_Meal}
+        onChange={() => Set_Is_Checked_Midnight_Meal(prevState => !prevState)}
+      />
 
     </StyledSearchArea>
       <div>
