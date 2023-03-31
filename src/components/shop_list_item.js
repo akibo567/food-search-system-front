@@ -1,6 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+import {StyledCommonButton} from "../common_style"
 
 function ShopListItem(props) {
   const navigate = useNavigate();
@@ -14,18 +17,29 @@ function ShopListItem(props) {
   });
 
   return (
-    <div className="Menu_List_Component">
+    <StyledMenuListComponent>
       <img src={props.shopitem.thumb_img} alt=""/>
       <p>店舗名称:{props.shopitem.name}</p>
       <p>アクセス:{props.shopitem.acccess}</p>
-      <button
+      <StyledCommonButton
             onClick={() => {
               Detail_Button_Onclick();
             }}
             className="detail_button"
-      >詳細</button>
-    </div>
+      >詳細</StyledCommonButton>
+    </StyledMenuListComponent>
   );
 }
+
+const StyledMenuListComponent = styled.div`
+  text-align: center;
+  font-size: 15px;
+  width:300px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: 2px solid #000000;
+  border-radius: 30px;
+  padding: 5px;
+`;
 
 export default ShopListItem;

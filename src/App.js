@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Search from './screen/search';
 import ShopDetail from './screen/shop_detail';
-import './App.css';
 
 function App() {
   return (

@@ -4,6 +4,11 @@ import axios from "axios";
 
 import ShopList from "../components/shop_list"
 import {API_ENDPOINT} from "../settings"
+import {StyledCommonButton} from "../common_style"
+
+import styled from "styled-components";
+
+
 
 function Search() {
   const [Latitude_Data, Set_Latitude_Data] = useState(null);
@@ -15,7 +20,7 @@ function Search() {
   const [Searched_List, Set_Searched_List] = useState();
 
   const [Current_Pageno, Set_Current_Pageno] = useState(1);
-  const [Page_Item_Amount, Set_Page_Item_Amount] = useState(3);
+  const [Page_Item_Amount, Set_Page_Item_Amount] = useState(9);
   const [Results_Available, Set_Results_Available] = useState(0);
 
   const [Selected_Range, Set_selectedRange] = useState(1);
@@ -93,41 +98,48 @@ function Search() {
             <p>現在地 経度:{Latitude_Data} 緯度:{Longitude_Data}</p>
      }
 
-    現在地からの範囲：
-     <select
-          value={Selected_Range}
-          onChange={e => Set_selectedRange(e.target.value)}
-        >
-          <option value="1">300m</option>
-          <option value="2">500m</option>
-          <option value="3">1000m</option>
-          <option value="4">2000m</option>
-          <option value="5">3000m</option>
-        </select>
+    <StyledSearchArea>
+      現在地からの範囲：
+      <select
+            value={Selected_Range}
+            onChange={e => Set_selectedRange(e.target.value)}
+          >
+            <option value="1">300m</option>
+            <option value="2">500m</option>
+            <option value="3">1000m</option>
+            <option value="4">2000m</option>
+            <option value="5">3000m</option>
+          </select>
 
-     <button
+      <div>
+        <StyledSearchButton
             onClick={() => {
               Search_Button_Onclick();
             }}
             disabled={Latitude_Data === null || Longitude_Data === null}
             className="load_button"
-      >検索</button>
+      >検索</StyledSearchButton>
+      </div>
 
-      <button
+     </StyledSearchArea>
+
+      <StyledNPButton
             onClick={() => {
               Prev_Button_Onclick();
             }}
             disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
             className="load_button"
-      >Prev</button>
-           <button
+      >Prev</StyledNPButton>
+      件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
+              {( Current_Pageno * Page_Item_Amount)}/
+              {Results_Available}
+           <StyledNPButton
             onClick={() => {
               Next_Button_Onclick();
             }}
             disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
             className="load_button"
-      >Next</button>
-      <p>件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}/{Results_Available}</p>
+      >Next</StyledNPButton>
      {Searched_List && <ShopList
         shop_items={Searched_List}
      />}
@@ -136,5 +148,20 @@ function Search() {
 
 
 }
+
+const StyledNPButton = styled(StyledCommonButton)`
+  width:200px;
+  height:50px;
+`;
+
+const StyledSearchButton = styled(StyledCommonButton)`
+  width:200px;
+  height:50px;
+`;
+
+const StyledSearchArea = styled.div`
+  margin:10px;
+  font-size: 15px;
+`;
 
 export default Search;

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import ShopListItem from "./shop_list_item";
+import styled from "styled-components";
 
 function ShopList(props) {
 
@@ -13,7 +14,7 @@ function ShopList(props) {
   });
 
   return (
-    <div className="Shop_List_Component">
+    <StyledShopListComponent>
       {props.shop_items.map((item) => {
         return (
           <ShopListItem
@@ -21,8 +22,17 @@ function ShopList(props) {
           />
         );
       })}
-    </div>
+    </StyledShopListComponent>
   );
 }
+
+const StyledShopListComponent = styled.div`
+  //width: 90%;
+  //margin-left: 5%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
 
 export default ShopList;
