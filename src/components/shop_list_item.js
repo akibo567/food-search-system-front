@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import styled from "styled-components";
 
 import {StyledCommonButton} from "../common_style"
@@ -26,7 +26,6 @@ function ShopListItem(props) {
             onClick={() => {
               Detail_Button_Onclick();
             }}
-            className="detail_button"
       >詳細</StyledDetailButton>
     </StyledMenuListComponent>
   );

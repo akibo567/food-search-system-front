@@ -18,7 +18,7 @@ function Search() {
   const [Is_Supported_Geolocation, Set_Is_Supported_Geolocation] = useState(false);
   const [Is_Loaded_Searched_List, Set_Is_Loaded_Searched_List] = useState(false);
   const [Search_Query, Set_Search_Query] = useState();
-  const [Searched_List, Set_Searched_List] = useState();
+  const [Searched_List, Set_Searched_List] = useState(null);
 
   const [Current_Pageno, Set_Current_Pageno] = useState(1);
   const [Page_Item_Amount, Set_Page_Item_Amount] = useState(10);
@@ -79,8 +79,15 @@ function Search() {
       Set_Searched_List(response.data.shop);
       Set_Results_Available(response.data.results_available);
       Set_Is_Loaded_Searched_List(true);
+      try{
+        sessionStorage.setItem('Searched_List', JSON.stringify(response.data.shop));
+        sessionStorage.setItem('Search_Query', JSON.stringify(Post_Search_Query));
+        sessionStorage.setItem('Results_Available', response.data.results_available);
+      }catch{
+
+      }
       if(Refresh){
-        Set_Current_Pageno(1);  
+        Set_Current_Pageno(1);
       }
     })
     .catch(function () {
@@ -89,12 +96,52 @@ function Search() {
   };
   
   useEffect(() => {
+    try{
+      if (sessionStorage.getItem("Searched_List")) {
+        Set_Searched_List(JSON.parse(sessionStorage.getItem("Searched_List")));
+        Set_Is_Loaded_Searched_List(true);
+      }
+      if (sessionStorage.getItem("Search_Query")) {
+        let storage_query=JSON.parse(sessionStorage.getItem("Search_Query"));
+        Set_Search_Query(storage_query);
+
+        Set_Current_Pageno(storage_query.Current_Pageno);
+        Set_Page_Item_Amount(storage_query.Page_Item_Amount);
+        Set_New_Page_Item_Amount(storage_query.Page_Item_Amount);
+      
+        Set_selectedRange(storage_query.Range);
+        Set_Search_Keyword(storage_query.Keyword);
+        Set_Is_Checked_Private_Room(storage_query.Private_Room);
+        Set_Is_Checked_Lunch(storage_query.Lunch);
+        Set_Is_Checked_Midnight_Meal(storage_query.Midnight_Meal);
+      }
+      if(sessionStorage.getItem("Results_Available")){
+        Set_Results_Available(sessionStorage.getItem("Results_Available"));
+      }
+      if (sessionStorage.getItem("Latitude_Data")) {
+        Set_Latitude_Data(sessionStorage.getItem("Latitude_Data"));
+      }
+      if (sessionStorage.getItem("Longitude_Data")) {
+        Set_Longitude_Data(sessionStorage.getItem("Longitude_Data"));
+      }
+    }catch{
+      
+    }
+  },[]);
+
+  useEffect(() => {
     if(navigator.geolocation){
       Set_Is_Supported_Geolocation(true);
       navigator.geolocation.getCurrentPosition(position => {
         const { latitude, longitude } = position.coords;
         Set_Latitude_Data(latitude);
         Set_Longitude_Data(longitude);
+        try {
+          sessionStorage.setItem('Latitude_Data', latitude);
+          sessionStorage.setItem('Longitude_Data', longitude);
+        }catch{
+
+        }
       });
     }
   },[Is_Supported_Geolocation]);
@@ -202,29 +249,33 @@ function Search() {
 
 
     
-      <StyledPagingContainer>
-        <StyledNPButton
-              onClick={() => {
-                Prev_Button_Onclick();
-              }}
-              disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
-        >Prev</StyledNPButton>
-        <StyledPagingText>
-        件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
-                {Results_Available < ( Current_Pageno * Page_Item_Amount)? Results_Available : ( Current_Pageno * Page_Item_Amount)}/
-                {Results_Available}
-        </StyledPagingText>
-            <StyledNPButton
-              onClick={() => {
-                Next_Button_Onclick();
-              }}
-              disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
-        >Next</StyledNPButton>
-      </StyledPagingContainer>
+    {Searched_List &&
+      <>
+        <StyledPagingContainer>
+          <StyledNPButton
+                onClick={() => {
+                  Prev_Button_Onclick();
+                }}
+                disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
+          >Prev</StyledNPButton>
+          <StyledPagingText>
+          件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
+                  {Results_Available < ( Current_Pageno * Page_Item_Amount)? Results_Available : ( Current_Pageno * Page_Item_Amount)}/
+                  {Results_Available}
+          </StyledPagingText>
+              <StyledNPButton
+                onClick={() => {
+                  Next_Button_Onclick();
+                }}
+                disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
+          >Next</StyledNPButton>
+        </StyledPagingContainer>
 
-     {Searched_List && <ShopList
-        shop_items={Searched_List}
-     />}
+        {Searched_List && <ShopList
+            shop_items={Searched_List}
+        />}
+      </>
+     }
     </div>
   );
 
