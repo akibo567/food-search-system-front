@@ -14,9 +14,9 @@ function Search() {
   const [Latitude_Data, Set_Latitude_Data] = useState(null);
   const [Longitude_Data, Set_Longitude_Data] = useState(null);
 
-  const [Is_Loaded_Geolocation, Set_Is_Loaded_Geolocation] = useState(false);
   const [Is_Supported_Geolocation, Set_Is_Supported_Geolocation] = useState(false);
   const [Is_Loaded_Searched_List, Set_Is_Loaded_Searched_List] = useState(false);
+  const [Is_Loading_Searched_List, Set_Is_Loading_Searched_List] = useState(false);
   const [Search_Query, Set_Search_Query] = useState();
   const [Searched_List, Set_Searched_List] = useState(null);
 
@@ -55,6 +55,7 @@ function Search() {
 
   const Search_Shop = (Refresh) => {
     Set_Is_Loaded_Searched_List(false);
+    Set_Is_Loading_Searched_List(true);
     let Post_Search_Query;
     if(Refresh){
       Set_Page_Item_Amount(New_Page_Item_Amount);
@@ -81,6 +82,7 @@ function Search() {
       Set_Searched_List(response.data.shop);
       Set_Results_Available(response.data.results_available);
       Set_Is_Loaded_Searched_List(true);
+      Set_Is_Loading_Searched_List(false);
       try{
         sessionStorage.setItem('Searched_List', JSON.stringify(response.data.shop));
         sessionStorage.setItem('Search_Query', JSON.stringify(Post_Search_Query));
@@ -93,7 +95,8 @@ function Search() {
       }
     })
     .catch(function () {
-      alert("通信エラー");
+      alert("APIの取得に失敗しました。");
+      Set_Is_Loading_Searched_List(false);
     });
   };
   
@@ -255,12 +258,10 @@ function Search() {
             onClick={() => {
               Search_Button_Onclick();
             }}
-            disabled={Latitude_Data === null || Longitude_Data === null}
+            disabled={Latitude_Data === null || Longitude_Data === null || Is_Loading_Searched_List}
       >検索</StyledSearchButton>
       </div>
 
-
-    
     {Searched_List &&
       <>
         <StyledPagingContainer>
@@ -271,7 +272,7 @@ function Search() {
                 disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
           >Prev</StyledNPButton>
           <StyledPagingText>
-          件数:{( (Current_Pageno - 1) * Page_Item_Amount) + 1}-
+          件数:{Results_Available >= 1 ? (( (Current_Pageno - 1) * Page_Item_Amount) + 1) : "0"}-
                   {Results_Available < ( Current_Pageno * Page_Item_Amount)? Results_Available : ( Current_Pageno * Page_Item_Amount)}/
                   {Results_Available}
           </StyledPagingText>
@@ -282,10 +283,13 @@ function Search() {
                 disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
           >Next</StyledNPButton>
         </StyledPagingContainer>
-
-        {Searched_List && <ShopList
+        {Results_Available >= 1 ? 
+          <ShopList
             shop_items={Searched_List}
-        />}
+          />
+          :
+          <StyledNoMatchText>該当結果なし</StyledNoMatchText>
+        }
       </>
      }
     </div>
@@ -325,7 +329,7 @@ const StyledPagingContainer = styled.div`
 const StyledSearchButton = styled(StyledCommonButton)`
   width:200px;
   height:50px;
-  font-size: 20px;3
+  font-size: 20px;
 `;
 
 const StyledSearchArea = styled.div`
@@ -353,6 +357,10 @@ const StyledSearchAreaTopic = styled.h3`
 const StyledSearchAreaLabel = styled.label`
   font-size: 15px;
   margin-right: 10px;
+`;
+
+const StyledNoMatchText = styled.h2`
+  font-size: 30px;
 `;
 
 

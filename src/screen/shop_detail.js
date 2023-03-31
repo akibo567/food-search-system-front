@@ -33,15 +33,17 @@ function ShopDetail(props) {
           <StyledCommonButton>ホットペッパーのページへ</StyledCommonButton></a>}
         <p>{Shop_Item.catch}</p>
         <StyledSection>住所:</StyledSection>
-        <p>{Shop_Item.location}</p>
+          <p>{Shop_Item.location}</p>
+        <StyledSection>駐車場:</StyledSection>
+          <p>{Shop_Item.parking}</p>
         <StyledSection>定休日:</StyledSection>
           <p>{Shop_Item.close}</p>
         <StyledSection>営業時間:</StyledSection>
           <p>{Shop_Item.business_hour}</p>
         <StyledSection>平均ディナー予算:</StyledSection>
           <p>{Shop_Item.budget_average}</p>
-        <StyledSection>最大宴会収容人数:</StyledSection>
-          <p>{Shop_Item.party_capacity}</p>
+        <StyledSection>総席数:</StyledSection>
+          <p>{Shop_Item.capacity}{Shop_Item.party_capacity && "(宴会最大収容"+Shop_Item.party_capacity+"人)"}</p>
         <StyledSection>個室:</StyledSection>
           <p>{Shop_Item.private_room === 1 ? "あり" : "なし"}</p>
         {((!isMobile && Shop_Item.urls_pc) || (isMobile && Shop_Item.urls_sp)) && 
