@@ -4,7 +4,7 @@ import axios from "axios";
 
 import ShopList from "../components/shop_list"
 import {API_ENDPOINT} from "../settings"
-import {StyledCommonButton} from "../common_style"
+import {StyledCommonButton, StyledHeader} from "../common_style"
 
 import styled from "styled-components";
 
@@ -158,7 +158,10 @@ function Search() {
   return (
     <div className="Search_Screen">
 
-      <StyledAppTitle>飲食店検索システム</StyledAppTitle>
+      
+      <StyledHeader>
+        <StyledAppTitle>飲食店検索システム</StyledAppTitle>
+      </StyledHeader>
      {
         !Is_Supported_Geolocation ? 
           <p>Geolocation API is not supported.</p>
@@ -332,12 +335,10 @@ function PagingComponent(props) {
 }
 
 const StyledAppTitle = styled.h1`
-  text-align: left;
   font-size: 30px;
-  margin-bottom: 10px;
-  background-color: black;
+  margin: 0px;
   color: white;
-  padding: 5px;
+  padding: 0px;
 `;
 
 const StyledNPButton = styled(StyledCommonButton)`

@@ -15,10 +15,11 @@ function ShopList(props) {
 
   return (
     <StyledShopListComponent>
-      {props.shop_items.map((item) => {
+      {props.shop_items.map((item,index) => {
         return (
           <ShopListItem
             shopitem={item}
+            key={index}
           />
         );
       })}

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { isMobile } from "react-device-detect";
 
-import {StyledCommonButton} from "../common_style"
+import {StyledCommonButton, StyledHeader} from "../common_style"
 
 
 function ShopDetail(props) {
@@ -27,10 +27,20 @@ function ShopDetail(props) {
     <StyledShopDetail>
       {Shop_Item &&
         <div className="Detail_Screen">
-        <StyledStoreName>{Shop_Item.name}({Shop_Item.name_kana})</StyledStoreName>
+        <StyledHeader>
+          <StyledStoreName>{Shop_Item.name}</StyledStoreName><StyledStoreNameKana>({Shop_Item.name_kana})</StyledStoreNameKana>
+        </StyledHeader>
         <p><img src={Shop_Item.thumb_img} alt=""/></p>
         {Shop_Item.urls_pc &&  <a target="_blank" rel="noreferrer" href={Shop_Item.urls_pc}>
-          <StyledCommonButton>ホットペッパーのページへ</StyledCommonButton></a>}
+          <StyledShopButton>ホットペッパーのページへ</StyledShopButton></a>}
+        {((!isMobile && Shop_Item.urls_pc) || (isMobile && Shop_Item.urls_sp)) && 
+          <>
+              <a target="_blank"  rel="noreferrer" href={isMobile? Shop_Item.urls_sp : Shop_Item.urls_pc}>
+                <StyledShopButton>クーポンページへ</StyledShopButton>
+              </a>
+          </>
+        }
+
         <p>{Shop_Item.catch}</p>
         <StyledSection>住所:</StyledSection>
           <p>{Shop_Item.location}</p>
@@ -46,15 +56,6 @@ function ShopDetail(props) {
           <p>{Shop_Item.capacity}{Shop_Item.party_capacity && "(宴会最大収容"+Shop_Item.party_capacity+"人)"}</p>
         <StyledSection>個室:</StyledSection>
           <p>{Shop_Item.private_room === 1 ? "あり" : "なし"}</p>
-        {((!isMobile && Shop_Item.urls_pc) || (isMobile && Shop_Item.urls_sp)) && 
-          <>
-            <StyledSection>ホットペッパークーポン:</StyledSection>
-              <a target="_blank"  rel="noreferrer" href={isMobile? Shop_Item.urls_sp : Shop_Item.urls_pc}>
-                <StyledCommonButton>クーポンページへ</StyledCommonButton>
-              </a>
-          </>
-        }
-
         </div>
       }
     </StyledShopDetail>
@@ -70,12 +71,14 @@ const StyledShopDetail = styled.div`
 `;
 
 const StyledStoreName = styled.h1`
-  text-align: left;
   font-size: 30px;
-  margin-bottom: 10px;
-  background-color: black;
+  margin :  0px;
   color: white;
-  padding: 5px;
+`;
+
+const StyledStoreNameKana = styled.span`
+  font-size: 15px;
+  color: white;
 `;
 
 const StyledSection = styled.h2`
@@ -83,6 +86,11 @@ const StyledSection = styled.h2`
   font-size: 20px;
   margin-bottom: 10px;
   border-bottom:1px solid #c0c0c0;
+`;
+
+const StyledShopButton = styled(StyledCommonButton)`
+  font-size: 15px;
+  margin-right:10px;
 `;
 
 export default ShopDetail;
