@@ -45,14 +45,6 @@ function Search() {
     Search_Shop(true);
   };
 
-  const Next_Button_Onclick = () => {
-    Set_Current_Pageno(Current_Pageno + 1);
-  };
-
-  const Prev_Button_Onclick = () => {
-    Set_Current_Pageno(Current_Pageno - 1);
-  };
-
   const Search_Shop = (Refresh) => {
     Set_Is_Loaded_Searched_List(false);
     Set_Is_Loading_Searched_List(true);
@@ -264,25 +256,13 @@ function Search() {
 
     {Searched_List &&
       <>
-        <StyledPagingContainer>
-          <StyledNPButton
-                onClick={() => {
-                  Prev_Button_Onclick();
-                }}
-                disabled={!Is_Loaded_Searched_List || Current_Pageno <= 1}
-          >Prev</StyledNPButton>
-          <StyledPagingText>
-          件数:{Results_Available >= 1 ? (( (Current_Pageno - 1) * Page_Item_Amount) + 1) : "0"}-
-                  {Results_Available < ( Current_Pageno * Page_Item_Amount)? Results_Available : ( Current_Pageno * Page_Item_Amount)}/
-                  {Results_Available}
-          </StyledPagingText>
-              <StyledNPButton
-                onClick={() => {
-                  Next_Button_Onclick();
-                }}
-                disabled={!Is_Loaded_Searched_List || Results_Available < ( (Current_Pageno) * Page_Item_Amount) + 1}
-          >Next</StyledNPButton>
-        </StyledPagingContainer>
+        <PagingComponent
+          Set_Current_Pageno={Set_Current_Pageno}
+          Current_Pageno={Current_Pageno}
+          Results_Available={Results_Available}
+          Page_Item_Amount={Page_Item_Amount}
+          Is_Loaded_Searched_List={Is_Loaded_Searched_List}
+        />
         {Results_Available >= 1 ? 
           <ShopList
             shop_items={Searched_List}
@@ -290,12 +270,61 @@ function Search() {
           :
           <StyledNoMatchText>該当結果なし</StyledNoMatchText>
         }
+        <PagingComponent
+          Set_Current_Pageno={Set_Current_Pageno}
+          Current_Pageno={Current_Pageno}
+          Results_Available={Results_Available}
+          Page_Item_Amount={Page_Item_Amount}
+          Is_Loaded_Searched_List={Is_Loaded_Searched_List}
+        />
       </>
      }
     </div>
   );
 
 
+}
+
+function PagingComponent(props) {
+
+  const Next_Button_Onclick = () => {
+    props.Set_Current_Pageno(props.Current_Pageno + 1);
+  };
+
+  const Prev_Button_Onclick = () => {
+    props.Set_Current_Pageno(props.Current_Pageno - 1);
+  };
+
+  const Current_Page_Item_Amount_Min = () => {
+    return props.Results_Available >= 1 ? (( (props.Current_Pageno - 1) * props.Page_Item_Amount) + 1) : "0";
+  };
+
+  const Current_Page_Item_Amount_Max = () => {
+    return props.Results_Available < ( props.Current_Pageno * props.Page_Item_Amount) ? props.Results_Available 
+    : ( props.Current_Pageno * props.Page_Item_Amount);
+  };
+
+  return(
+  <StyledPagingContainer>
+    <StyledNPButton
+          onClick={() => {
+            Prev_Button_Onclick();
+          }}
+          disabled={!props.Is_Loaded_Searched_List || props.Current_Pageno <= 1}
+    >Prev</StyledNPButton>
+    <StyledPagingText>
+    件数:{Current_Page_Item_Amount_Min()}-
+            {Current_Page_Item_Amount_Max()}/
+            {props.Results_Available}
+    </StyledPagingText>
+        <StyledNPButton
+          onClick={() => {
+            Next_Button_Onclick();
+          }}
+          disabled={!props.Is_Loaded_Searched_List || props.Results_Available < ( (props.Current_Pageno) * props.Page_Item_Amount) + 1}
+    >Next</StyledNPButton>
+  </StyledPagingContainer>
+  );
 }
 
 const StyledAppTitle = styled.h1`
