@@ -33,9 +33,9 @@ function ShopDetail(props) {
         <p><img src={Shop_Item.thumb_img} alt=""/></p>
         {Shop_Item.urls_pc &&  <a target="_blank" rel="noreferrer" href={Shop_Item.urls_pc}>
           <StyledShopButton>ホットペッパーのページへ</StyledShopButton></a>}
-        {((!isMobile && Shop_Item.urls_pc) || (isMobile && Shop_Item.urls_sp)) && 
+        {((!isMobile && Shop_Item.coupon_urls_pc) || (isMobile && Shop_Item.coupon_urls_sp)) && 
           <>
-              <a target="_blank"  rel="noreferrer" href={isMobile? Shop_Item.urls_sp : Shop_Item.urls_pc}>
+              <a target="_blank"  rel="noreferrer" href={isMobile? Shop_Item.coupon_urls_sp : Shop_Item.coupon_urls_pc}>
                 <StyledShopButton>クーポンページへ</StyledShopButton>
               </a>
           </>
@@ -91,6 +91,7 @@ const StyledSection = styled.h2`
 const StyledShopButton = styled(StyledCommonButton)`
   font-size: 15px;
   margin-right:10px;
+  margin-bottom:10px;
 `;
 
 export default ShopDetail;
