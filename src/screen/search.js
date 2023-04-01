@@ -45,6 +45,10 @@ function Search() {
     Search_Shop(true);
   };
 
+  const Is_Loading = () => {
+    return Latitude_Data === null || Longitude_Data === null || Is_Loading_Searched_List;
+  }
+
   const Search_Shop = (Refresh) => {
     Set_Is_Loaded_Searched_List(false);
     Set_Is_Loading_Searched_List(true);
@@ -245,13 +249,13 @@ function Search() {
 
     </StyledSearchArea>
 
-      <div>
+     <div>
         <StyledSearchButton
-            onClick={() => {
-              Search_Button_Onclick();
-            }}
-            disabled={Latitude_Data === null || Longitude_Data === null || Is_Loading_Searched_List}
-      >検索</StyledSearchButton>
+              onClick={() => {
+                Search_Button_Onclick();
+              }}
+              disabled={Is_Loading()}
+        >{Is_Loading() ? "ロード中…": "検索"}</StyledSearchButton>
       </div>
 
     {Searched_List &&
