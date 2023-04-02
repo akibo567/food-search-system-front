@@ -145,7 +145,7 @@ function Search() {
       }
       if (sessionStorage.getItem("Budget_List")) {
         Set_Budget_List(JSON.parse(sessionStorage.getItem("Budget_List")));
-        Set_Selected_Budget(storage_query);
+        Set_Selected_Budget(storage_query.Budget);
       }
     }catch{
       
