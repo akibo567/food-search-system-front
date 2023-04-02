@@ -20,6 +20,7 @@ function Search() {
   const [Is_Loading_Searched_List, Set_Is_Loading_Searched_List] = useState(false);
   const [Search_Query, Set_Search_Query] = useState();
   const [Searched_List, Set_Searched_List] = useState(null);
+  const [Budget_List, Set_Budget_List] = useState(null);
 
   const [Current_Pageno, Set_Current_Pageno] = useState(1);
   const [Page_Item_Amount, Set_Page_Item_Amount] = useState(10);
@@ -28,6 +29,7 @@ function Search() {
   const [Selected_Range, Set_selectedRange] = useState(1);
   const [New_Page_Item_Amount, Set_New_Page_Item_Amount] = useState(10);
   const [Search_Keyword, Set_Search_Keyword] = useState("");
+  const [Selected_Budget, Set_Selected_Budget] = useState("");
   const [Is_Checked_Private_Room, Set_Is_Checked_Private_Room] = useState(false);
   const [Is_Checked_Parking, Set_Is_Checked_Parking] = useState(false);
   const [Is_Checked_Lunch,Set_Is_Checked_Lunch] = useState(false);
@@ -60,6 +62,7 @@ function Search() {
         Latitude: Latitude_Data,
         Longitude: Longitude_Data,
         Range: Selected_Range,
+        Budget: Selected_Budget,
         Current_Pageno: Current_Pageno,
         Page_Item_Amount: New_Page_Item_Amount,
         Keyword: Search_Keyword,
@@ -92,19 +95,32 @@ function Search() {
       }
     })
     .catch(function () {
-      alert("APIの取得に失敗しました。");
+      alert("店舗一覧の取得に失敗しました。");
       Set_Is_Loading_Searched_List(false);
+    });
+  };
+
+  const Load_Budget_List = (Refresh) => {
+    axios_instance
+    .post('/budget_list')
+    .then(function (response) {
+      Set_Budget_List(response.data.budget);
+      sessionStorage.setItem('Budget_List', JSON.stringify(response.data.budget));
+    })
+    .catch(function () {
+      //alert("料金一覧の取得に失敗しました。");
     });
   };
   
   useEffect(() => {
     try{
+      let storage_query;
       if (sessionStorage.getItem("Searched_List")) {
         Set_Searched_List(JSON.parse(sessionStorage.getItem("Searched_List")));
         Set_Is_Loaded_Searched_List(true);
       }
       if (sessionStorage.getItem("Search_Query")) {
-        let storage_query=JSON.parse(sessionStorage.getItem("Search_Query"));
+        storage_query=JSON.parse(sessionStorage.getItem("Search_Query"));
         Set_Search_Query(storage_query);
 
         Set_Current_Pageno(storage_query.Current_Pageno);
@@ -127,9 +143,14 @@ function Search() {
       if (sessionStorage.getItem("Longitude_Data")) {
         Set_Longitude_Data(sessionStorage.getItem("Longitude_Data"));
       }
+      if (sessionStorage.getItem("Budget_List")) {
+        Set_Budget_List(JSON.parse(sessionStorage.getItem("Budget_List")));
+        Set_Selected_Budget(storage_query);
+      }
     }catch{
       
     }
+    Load_Budget_List();
   },[]);
 
   useEffect(() => {
@@ -212,6 +233,25 @@ function Search() {
           checked={Is_Checked_Private_Room}
           onChange={() => Set_Is_Checked_Private_Room(prevState => !prevState)}
         />
+        </StyledSearchAreaLabel>
+
+      <StyledSearchAreaTopic>予算:</StyledSearchAreaTopic>
+        ディナー予算:
+        <StyledSearchAreaLabel>
+            {Budget_List ? <select
+              value={Selected_Budget}
+              onChange={e => Set_Selected_Budget(e.target.value)}
+            >
+              <option value="">任意</option>
+              {Budget_List.map((item,index) => {
+                return (
+                  <option value={item.code} key={index}>{item.name}</option>
+                );
+              })}
+            </select> 
+            : 
+            <>任意(読み込み中...)</>
+            }
         </StyledSearchAreaLabel>
 
       <StyledSearchAreaTopic>営業時間:</StyledSearchAreaTopic>
