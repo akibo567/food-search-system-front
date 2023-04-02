@@ -21,7 +21,7 @@ function ShopDetail(props) {
     }else{
       Set_Shop_Item(location.state.shopitem);
     }
-  });
+  },[]);
 
   return (
     <StyledShopDetail>

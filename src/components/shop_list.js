@@ -1,17 +1,9 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ShopListItem from "./shop_list_item";
 import styled from "styled-components";
 
 function ShopList(props) {
-
-  const Detail_Button_Onclick = () => {
-
-  };
-
-  useEffect(() => {
-
-  });
 
   return (
     <StyledShopListComponent>
